@@ -99,7 +99,7 @@ class Base
   ajaxSettings: (params, defaults) ->
     $.extend({}, @defaults, defaults, params)
 
-class Collection extends Base
+class AjaxCollection extends Base
   constructor: (@model) ->
 
   find: (id, params) ->
@@ -136,7 +136,7 @@ class Collection extends Base
   failResponse: (xhr, statusText, error) =>
     @model.trigger('ajaxError', null, xhr, statusText, error)
 
-class Singleton extends Base
+class AjaxSingleton extends Base
   constructor: (@record) ->
     @model = @record.constructor
 
@@ -207,14 +207,14 @@ class Singleton extends Base
 Model.host = ''
 
 Include =
-  ajax: -> new Singleton(this)
+  ajax: -> new AjaxSingleton(this)
 
   url: (args...) ->
     args.unshift(encodeURIComponent(@id))
     Ajax.generateURL(@, args...)
 
 Extend =
-  ajax: -> new Collection(this)
+  ajax: -> new AjaxCollection(this)
 
   url: (args...) ->
     Ajax.generateURL(@, args...)
@@ -243,7 +243,7 @@ Model.Ajax.Methods =
 # Globals
 Ajax.defaults   = Base::defaults
 Ajax.Base       = Base
-Ajax.Singleton  = Singleton
-Ajax.Collection = Collection
+Ajax.Singleton  = AjaxSingleton
+Ajax.Collection = AjaxCollection
 Spine.Ajax      = Ajax
 module?.exports = Ajax
